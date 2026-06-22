@@ -13,6 +13,16 @@ describe('isProviderDefinedTool', () => {
     expect(isProviderDefinedTool(openai.tools.webSearch({}))).toBe(true);
   });
 
+  it('should identify OpenRouter web_search provider-defined tool shape', () => {
+    const webSearchTool = {
+      type: 'provider-defined',
+      id: 'openrouter.web_search',
+      args: { max_results: 5 },
+    };
+
+    expect(isProviderDefinedTool(webSearchTool)).toBe(true);
+  });
+
   it('should reject null, undefined, and non-objects', () => {
     expect(isProviderDefinedTool(null)).toBe(false);
     expect(isProviderDefinedTool(undefined)).toBe(false);
