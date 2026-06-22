@@ -541,6 +541,41 @@ describe('Provider-defined Tool Handling', () => {
       });
     }).not.toThrow();
   });
+
+  it('should not crash when autoResumeSuspendedTools is enabled with openrouter.web_search provider tool shape', () => {
+    const webSearchTool = {
+      type: 'provider-defined' as const,
+      id: 'openrouter.web_search',
+      args: { max_results: 5 },
+      inputSchema: () => ({
+        type: 'object',
+        properties: {
+          max_results: { type: 'number' },
+        },
+      }),
+    };
+
+    expect(isProviderDefinedTool(webSearchTool)).toBe(true);
+    expect(isVercelTool(webSearchTool as any)).toBe(false);
+
+    expect(() => {
+      new CoreToolBuilder({
+        originalTool: webSearchTool as any,
+        options: {
+          name: 'web_search',
+          logger: {
+            debug: vi.fn(),
+            warn: vi.fn(),
+            error: vi.fn(),
+            trackException: vi.fn(),
+          } as any,
+          description: 'Search the web',
+          requestContext: new RequestContext(),
+        },
+        autoResumeSuspendedTools: true,
+      });
+    }).not.toThrow();
+  });
 });
 
 describe('CoreToolBuilder strict', () => {

@@ -33,6 +33,30 @@ describe('prepareToolsAndToolChoice', () => {
       });
     });
 
+    it('should preserve OpenRouter web_search provider tools through provider-tool path', () => {
+      const openRouterWebSearchTool = {
+        id: 'openrouter.web_search',
+        type: 'provider-defined',
+        args: { max_results: 5 },
+      };
+
+      const result = prepareToolsAndToolChoice({
+        tools: { web_search: openRouterWebSearchTool as any },
+        toolChoice: undefined,
+        activeTools: undefined,
+        targetVersion: 'v3',
+      });
+
+      expect(result.tools).toBeDefined();
+      expect(result.tools).toHaveLength(1);
+      expect(result.tools![0]).toMatchObject({
+        type: 'provider',
+        name: 'web_search',
+        id: 'openrouter.web_search',
+        args: { max_results: 5 },
+      });
+    });
+
     it('should use provider-defined type for v2 target version', () => {
       const providerTool = {
         id: 'openai.web_search',
